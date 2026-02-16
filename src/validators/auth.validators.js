@@ -30,8 +30,4 @@ export const registerSchema = z
             .regex(numberRegex, {message: "Password must contain at least one number"})
             .regex(specialCharRegex, {message: "Password must contain at least one special character"})
             .trim()
-    })
- 
-
-
-
+    });
