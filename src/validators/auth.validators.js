@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-const phoneRegex = /^[0-9]{10}$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const phoneRegex = /^[0-9]{10,15}$/;
 const lowerCaseRegex = /[a-z]/;
 const upperCaseRegex = /[A-Z]/;
 const numberRegex = /[0-9]/;
@@ -9,18 +8,18 @@ const specialCharRegex = /[^a-zA-Z0-9]/;
 
 export const registerSchema = z
     .object({
-        email:
-            z.string()
-            .email({message: "Invalid email address"})
-            .regex(emailRegex, {message: "Invalid email address"})
+        identifier:
+            z.string({required_error: "email or phone number is required"})
             .trim()
-            .optional(),
+            .toLowerCase()
+            .transform((data) => {
+                const emailCheck = z.string().email().safeParse(data);
 
-        phone:
-            z.string()
-            .regex(phoneRegex, {message: "Invalid phone number"})
-            .trim()
-            .optional(),
+                if (emailCheck.success) return { type: "email", value: data}
+                if (phoneRegex.test(data)) return { type: "phone", value: data}
+
+                throw new Error("Invalid email or phone number");
+            }),
 
         password:
             z.string()
@@ -32,7 +31,7 @@ export const registerSchema = z
             .regex(specialCharRegex, {message: "Password must contain at least one special character"})
             .trim()
     })
-    .refine((data) => data.email || data.phone, {
-        message: "Email or phone is required",
-        path: ["email", "phone"]
-    });
+ 
+
+
+
