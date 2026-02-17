@@ -5,20 +5,17 @@ export const protect = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) 
-        res.status(401).json({message: "Unauthorized"});
+        return res.status(401).json({message: "Unauthorized"});
 
     const token = authHeader.split(" ")[1];
 
     try {
 
-        const decoded = verifyToken;
+        const decoded = verifyToken(token);
         req.user = decoded;
         next();
 
     } catch (error) {
-        res.status(401).json({
-            status: "ERROR",
-            message: "Token Invalid or Expired"
-        });        
+        next(AppError("Token Invalid or Expired", 401));
     }
 };
