@@ -6,7 +6,9 @@ import { asyncHandler } from "../middleware/asyncHandler.js";
 
 const router = Router();
 
-router.post("/",
+router.post("/register",
     validate(registerSchema),
     asyncHandler(registerUserService)
 );
+
+export default router;
