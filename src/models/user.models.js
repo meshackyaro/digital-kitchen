@@ -9,14 +9,16 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             unique: true,
-            match: [emailRegex, "Invalid email address"]
+            match: [emailRegex, "Invalid email address"],
+            optional: true
         },
 
         phone: {
             type: String,
             required: true,
             unique: true,
-            match: [phoneRegex, "Invalid phone number"]
+            match: [phoneRegex, "Invalid phone number"],
+            optional: true
         },
 
         password: {

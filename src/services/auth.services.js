@@ -5,13 +5,11 @@ export const registerUserService = async (identifier, password) => {
 
     const { type, value } = identifier;
 
-    const existingUser = await User.findOne({
-        [type]: value,
-    });
+    const existingUser = await User.findOne({ [type]: value });
 
     if (existingUser) throw new AppError("User already exists", 400);
 
-    const hashedPassword = bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = {
         [type]: value,
@@ -22,6 +20,6 @@ export const registerUserService = async (identifier, password) => {
 
     return {
         id: newUser._id,
-        type: newUser[type],
+        identifier: newUser[type],
     }
 };
