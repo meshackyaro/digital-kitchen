@@ -1,10 +1,6 @@
 import { z } from "zod";
 
 const phoneRegex = /^[0-9]{10,15}$/;
-const lowerCaseRegex = /[a-z]/;
-const upperCaseRegex = /[A-Z]/;
-const numberRegex = /[0-9]/;
-const specialCharRegex = /[^a-zA-Z0-9]/;
 
 export const registerSchema = z
     .object({
@@ -13,7 +9,7 @@ export const registerSchema = z
             .trim()
             .toLowerCase()
             .transform((data) => {
-                const emailCheck = z.string().email().safeParse(data);
+                const emailCheck = z.email().safeParse(data);
 
                 if (emailCheck.success) return { type: "email", value: data}
                 if (phoneRegex.test(data)) return { type: "phone", value: data}
@@ -22,12 +18,12 @@ export const registerSchema = z
             }),
 
         password:
-            z.string()
+            z.string({required_error: "Password is required"})
+            .trim()
             .min(8, {message: "Password must be at least 8 characters long"})
             .max(32, {message: "Password must be at most 32 characters long"})
-            .regex(lowerCaseRegex, {message: "Password must contain at least one lowercase letter"})
-            .regex(upperCaseRegex, {message: "Password must contain at least one uppercase letter"})
-            .regex(numberRegex, {message: "Password must contain at least one number"})
-            .regex(specialCharRegex, {message: "Password must contain at least one special character"})
-            .trim()
-    });
+            .regex(/[a-z]/, {message: "Password must contain at least one lowercase letter"})
+            .regex(/[A-Z]/, {message: "Password must contain at least one uppercase letter"})
+            .regex(/[0-9]/, {message: "Password must contain at least one number"})
+            .regex(/[^a-zA-Z0-9]/, {message: "Password must contain at least one special character"})
+});

@@ -4,6 +4,8 @@ export const validate = (schema) => (req, res, next) => {
         // Parse and transform data
         const parsedData = schema.parse(req.body);
 
+        console.log("Parsed data in middleware:", parsedData);
+
         // Replace req.body with the parsed/transformed data    
         req.body = parsedData;
 
@@ -12,7 +14,9 @@ export const validate = (schema) => (req, res, next) => {
         
     } catch (error) {
         // Zod throws a ZodError on validation failure
-        if (Error.name == "zodError") {
+        if (error.name == "ZodError") {
+            console.log("Validation error:", error.errors);  // log it
+
             error.statusCode = 400;
 
             // Attach structured error details for clients
@@ -26,3 +30,20 @@ export const validate = (schema) => (req, res, next) => {
         next(error); 
     }
 };
+
+
+// export const validate = (schema) => (req, res, next) => {
+//   try {
+//     const parsedData = schema.parse(req.body);
+//     req.body = parsedData;
+//     next();
+//   } catch (error) {
+//     if (error.name === "ZodError") {
+//       return res.status(400).json({
+//         status: "ERROR",
+//         message: error.errors
+//       });
+//     }
+//     next(error);
+//   }
+// };
