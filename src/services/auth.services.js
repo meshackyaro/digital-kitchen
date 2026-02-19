@@ -1,6 +1,7 @@
 import { User } from "../models/user.models.js";
 import bcrypt from "bcrypt";
 import { AppError } from "../utils/appError.js";
+import { generateToken } from "../utils/jwt.js";
 
 export const registerUserService = async (data) => {
 
@@ -33,26 +34,24 @@ export const registerUserService = async (data) => {
     }
 };
 
-// export const registerUserService = async (data) => {
+export const login = async (data) => {
+  
+    const { identifier, password } = data;
 
-//     console.log("Service received data:", data);
+    const { type, value } = identifier;
 
-//     if (!data) {
-//         throw new Error("No data received in service");
-//     }
+    const user = await User.findOne({ [type]: value});
 
-//     const { identifier, password } = data;
+    if (!user) throw new AppError("Invalid username or password", 401);
 
-//     console.log("Identifier in service:", identifier);
-//     console.log("Password in service:", password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
-//     if (!password) {
-//         throw new Error("Password is required");
-//     }
+    if (!isMatch) throw new AppError("Invalid email or phone number");
 
-//     const { type, value } = identifier;
+    const token = generateToken(user.id);
 
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     return { success: true };
-// };
+    return {
+        id: user._id,
+        token, 
+    };
+};
