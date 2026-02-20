@@ -9,10 +9,6 @@ export const registerUserService = async (data) => {
 
     const { type, value} = identifier;
 
-    console.log("Identifier received:", identifier);
-    console.log("Password received:", password);
-
-
     const existingUser = await User.findOne({ [type]: value });
 
     if (existingUser) throw new AppError("User already exists", 400);
@@ -20,7 +16,6 @@ export const registerUserService = async (data) => {
     if (!password) throw new AppError("Password is required", 400);
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("Hashed password:", hashedPassword);
     const user = {
         [type]: value,
         password: hashedPassword,

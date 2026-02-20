@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const phoneRegex = /^[0-9]{10,15}$/;
+const phoneRegex = /^\+?\d{10,15}$/;
 
 export const registerSchema = z
     .object({

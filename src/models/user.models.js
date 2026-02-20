@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const phoneRegex = /^[0-9]{10}$/;
+const phoneRegex = /^\+?\d{10,15}$/;
 
 const userSchema = new mongoose.Schema(
     {
@@ -9,14 +9,14 @@ const userSchema = new mongoose.Schema(
             type: String,
             unique: true,
             match: [emailRegex, "Invalid email address"],
-            sparce: true
+            sparse: true
         },
 
         phone: {
             type: String,
             unique: true,
             match: [phoneRegex, "Invalid phone number"],
-            sparce: true
+            sparse: true
         },
 
         password: {
