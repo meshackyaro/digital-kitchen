@@ -14,6 +14,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// 
 app.use("/api", routes);
 
+// Error handling middleware
 app.use(errorHandler);

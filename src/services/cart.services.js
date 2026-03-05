@@ -1,6 +1,6 @@
-import { AppError } from "../utils/AppError.js";
-import { Food } from "../models/food.model.js";
-import { Cart } from "../models/cart.model.js";
+import { AppError } from "../utils/appError.js";
+import { Food } from "../models/food.models.js";
+import { Cart } from "../models/cart.models.js";
 
 export const addToCartService = async (userId, foodId, quantity) => {
     const food = await Food.findById(foodId);
@@ -17,10 +17,10 @@ export const addToCartService = async (userId, foodId, quantity) => {
         return await Cart.findById(newCart._id).populate("items.food");
     };
 
-    const itemIndex = cart.items.findIndex(item => item.food.toString() === foodId);
+    const existingCartItem   = cart.items.findIndex(item => item.food.toString() === foodId);
 
-    if (itemIndex > -1) {
-        cart.items[itemIndex].quantity += quantity;
+    if (existingCartItem > -1) {
+        cart.items[existingCartItem].quantity += quantity;
     } else {
         cart.items.push({ food: foodId, quantity });
     };

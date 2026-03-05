@@ -18,7 +18,7 @@ const foodSchema = new mongoose.Schema(
             trim: true,
         },
         category: {
-            trype: String,
+            type: String,
             required: true,
             enum: ["Starter", "Main Course", "Dessert", "Beverage", "Snack"],
             trim: true,
@@ -26,6 +26,8 @@ const foodSchema = new mongoose.Schema(
         },
         image: {
             type: String, // URL to image
+            required: true,
+            trim: true,
         },
         isAvailable: {
             type: Boolean,

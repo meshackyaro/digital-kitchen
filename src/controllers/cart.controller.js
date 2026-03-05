@@ -1,4 +1,4 @@
-import { addToCartService, getCartService, emptyCartService } from "../services/cart.services.js";
+import { addToCartService, getCartService, emptyCartService, removeFromCartService } from "../services/cart.services.js";
 
 export const addToCartController = async (req, res) => {
     const { foodId, quantity } = req.body;
@@ -27,7 +27,7 @@ export const getCartController = async (req, res) => {
 };
 
 export const removeFromCartController = async (req, res) => {
-    const { foodId } = req.body;
+    const { foodId } = req.params;
     const userId = req.user._id;
 
     const cart = await removeFromCartService(userId, foodId);

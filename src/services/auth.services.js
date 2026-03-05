@@ -37,11 +37,11 @@ export const login = async (data) => {
 
     const user = await User.findOne({ [type]: value});
 
-    if (!user) throw new AppError("Invalid username or password", 401);
+    if (!user) throw new AppError("Invalid email or phone number", 401);
 
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) throw new AppError("Invalid email or phone number");
+    if (!isMatch) throw new AppError("Invalid email or phone number", 401);
 
     const token = generateToken(user.id);
 

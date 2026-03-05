@@ -6,7 +6,7 @@ import { registerController, loginController } from "../controllers/auth.control
 
 const router = Router();
 
-router.post("/",
+router.post("/register",
     validate(registerSchema),
     asyncHandler(registerController)
 );
