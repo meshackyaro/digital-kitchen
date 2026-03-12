@@ -2,7 +2,7 @@ import { Food } from "../models/food.models.js";
 import { AppError } from "../utils/appError.js";
 
 export const fetchFoodService = async () => {
-    const food = await Food.find();
+    const food = await Food.find({isAvailable: true});
     return food;
 };
 
@@ -10,6 +10,7 @@ export const fetchFoodByIdService = async (id) => {
     const food = await Food.findById(id);
 
     if (!food) throw new AppError("Food not found", 404);
+    if (!food.isAvailable) throw new AppError("Food is not available", 400);
     return food;
 };
 
