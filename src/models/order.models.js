@@ -57,7 +57,7 @@ const orderSchema = new mongoose.Schema(
             unique: true,
             sparse: true
         },
-        address: {
+        deliveryAddress: {
             type: String,
             required: true,
             trim: true
