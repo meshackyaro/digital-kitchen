@@ -6,7 +6,6 @@ const orderItemSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Food",
             required: true,
-            default: 1
         },
         name: {
             type: String,
