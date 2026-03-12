@@ -7,7 +7,7 @@ import { authorize } from "../middleware/authorize.middleware.js";
 
 const router = Router();
 
-router.use(authorize("user"));
+router.use(authorize("admin", "user"));
 
 router.post("/",
     validate(addToCartSchema),
