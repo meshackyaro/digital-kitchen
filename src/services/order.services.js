@@ -12,6 +12,11 @@ export const createOrderService = async (userId, deliveryAddress) => {
     const cart = await Cart.findOne({ user: userId }).populate("items.food");
     if (!cart || cart.items.length === 0) throw new AppError("Cart is empty", 404);
 
+    // const unavailableItems = cart.items.filter((item) => !item.food.isAvailable);
+    // if (unavailableItems.length > 0) {
+    //     throw new AppError("Some items in your cart are no longer available", 400);
+    // }
+
     // 3. Prepare order items and calculate total (all in Kobo)
     const orderItems = cart.items.map((item) => ({
         food: item.food._id,
@@ -38,6 +43,53 @@ export const createOrderService = async (userId, deliveryAddress) => {
     });
 
     // 5. Clear the cart (don't delete it, just empty it)
+    cart.items = [];
+    await cart.save();
+
+    return order;
+};
+
+
+
+export const createOrderFromCart = async (userId, deliveryAddress) => {
+    const cart = await Cart.findOne({ user: userId }).populate("items.food");
+    if (!cart || cart.items.length === 0) {
+        throw new AppError("Cart is empty", 400);
+    }
+
+    const orderItems = [];
+    let totalAmount = 0;
+
+    for (const item of cart.items) {
+        const food = await Food.findById(item.food._id);
+        
+        if (!food || !food.isAvailable) {
+            throw new AppError(`Food item "${item.food.name}" is no longer available`, 400);
+        }
+
+        const itemPrice = food.price;
+        const itemQuantity = item.quantity;
+        const subtotal = itemPrice * itemQuantity;
+
+        orderItems.push({
+            food: food._id,
+            name: food.name,
+            price: itemPrice,
+            quantity: itemQuantity
+        });
+
+        totalAmount += subtotal;
+    }
+
+    const order = await Order.create({
+        user: userId,
+        items: orderItems,
+        totalAmount,
+        deliveryAddress,
+        status: "Pending"
+    });
+
+    // Clear cart after placing order
     cart.items = [];
     await cart.save();
 
