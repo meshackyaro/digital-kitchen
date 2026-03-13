@@ -12,10 +12,10 @@ const foodSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
-        price: {
-            type: String,
+        priceInKobo: {
+            type: Number,
             required: true,
-            trim: true,
+            min: 0
         },
         category: {
             type: String,

@@ -12,9 +12,10 @@ const orderItemSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
-        price: {
+        priceInKobo: {
             type: Number,
-            required: true
+            required: true,
+            min: 0
         },
         quantity: {
             type: Number,
@@ -32,7 +33,7 @@ const orderSchema = new mongoose.Schema(
             required: true
         },
         items: [orderItemSchema],
-        totalAmount: {
+        totalAmountInKobo: {
             type: Number,
             required: true,
             min: 0

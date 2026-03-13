@@ -16,10 +16,14 @@ export const fetchFoodByIdService = async (id) => {
 
 export const createFoodService = async (foodData) => {
     const { name, description, price, category, image, isAvailable } = foodData;
+    
+    // Convert Naira (decimal) to Kobo (integer)
+    const priceInKobo = Math.round(Number(price) * 100);
+
     const newFood = await Food.create({
         name,
         description,
-        price,
+        priceInKobo,
         category,
         image,
         isAvailable
@@ -29,9 +33,16 @@ export const createFoodService = async (foodData) => {
 
 export const updateFoodService = async (id, foodData) => {
     const { name, description, price, category, image, isAvailable } = foodData;
+    
+    // Create update object and conditionally add priceInKobo if price exists
+    const updateData = { name, description, category, image, isAvailable };
+    if (price !== undefined) {
+        updateData.priceInKobo = Math.round(Number(price) * 100);
+    }
+
     const updatedFood = await Food.findByIdAndUpdate(
         id, 
-        { name, description, price, category, image, isAvailable }, 
+        updateData, 
         { new: true, runValidators: true }
     );
 

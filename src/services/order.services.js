@@ -12,16 +12,16 @@ export const createOrderService = async (userId, deliveryAddress) => {
     const cart = await Cart.findOne({ user: userId }).populate("items.food");
     if (!cart || cart.items.length === 0) throw new AppError("Cart is empty", 404);
 
-    // 3. Prepare order items and calculate total
+    // 3. Prepare order items and calculate total (all in Kobo)
     const orderItems = cart.items.map((item) => ({
         food: item.food._id,
         name: item.food.name,
-        price: Number(item.food.price), // Convert string to number for math
+        priceInKobo: item.food.priceInKobo,
         quantity: item.quantity
     }));
 
-    const totalAmount = orderItems.reduce(
-        (total, item) => total + item.price * item.quantity, 
+    const totalAmountInKobo = orderItems.reduce(
+        (total, item) => total + item.priceInKobo * item.quantity, 
         0
     );
 
@@ -29,7 +29,7 @@ export const createOrderService = async (userId, deliveryAddress) => {
     const order = await Order.create({
         user: userId,
         items: orderItems,
-        totalAmount,
+        totalAmountInKobo,
         address: deliveryAddress,
         phone: user.phone || "Not Provided", // Use user's registered phone
         email: user.email || "Not Provided", // Use user's registered email
