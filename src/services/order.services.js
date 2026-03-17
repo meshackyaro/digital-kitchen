@@ -19,7 +19,7 @@ export const createOrderService = async (userId, deliveryAddress) => {
             `Sorry, the ${unavailableItem.food.name} is no longer available. Please remove it from your cart to continue.`, 
             400
         );
-    }
+    };
 
     // 4. Prepare order items and calculate total (all in Kobo)
     const orderItems = cart.items.map((item) => ({
@@ -49,6 +49,36 @@ export const createOrderService = async (userId, deliveryAddress) => {
     // 6. Clear the cart (don't delete it, just empty it)
     cart.items = [];
     await cart.save();
+
+    return order;
+};
+
+
+export const fetchOrderHistoryService = async (userId) => {
+    const orders = await Order.find({ user: userId }).populate("items.food");
+    return orders;
+};
+
+export const fetchOrderByIdService = async (userId, orderId) => {
+    const order = await Order.findOne({ user: userId, _id: orderId }).populate("items.food");
+
+    if (!order) throw new AppError("Order not found", 404);
+
+    return order;
+};
+
+
+export const cancelOrderService = async (userId, orderId) => {
+    const order = await Order.findOne({ user: userId, _id: orderId });
+
+    if (!order) throw new AppError("Order not found", 404);
+
+    if (order.status === "cancelled") throw new AppError("Order is already cancelled", 400);
+
+    if (order.status === "completed") throw new AppError("Order is already completed, cannot cancel", 400);
+
+    order.status = "cancelled";
+    await order.save();
 
     return order;
 };

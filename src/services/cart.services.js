@@ -9,6 +9,8 @@ export const addToCartService = async (userId, foodId, quantity) => {
 
     const cart = await Cart.findOne({ user: userId });
 
+    if (!food.isAvailable) throw new AppError(`Sorry, the ${food.name} is currently unavailable`, 404);
+
     if (!cart) {
         const newCart = await Cart.create({ 
             user: userId, 
@@ -17,7 +19,7 @@ export const addToCartService = async (userId, foodId, quantity) => {
         return await Cart.findById(newCart._id).populate("items.food");
     };
 
-    const existingCartItem   = cart.items.findIndex(item => item.food.toString() === foodId);
+    const existingCartItem = cart.items.findIndex(item => item.food.toString() === foodId);
 
     if (existingCartItem > -1) {
         cart.items[existingCartItem].quantity += quantity;

@@ -51,7 +51,7 @@ export const deleteFoodController = async (req, res) => {
     const food = await deleteFoodService(foodId);
     
     res.status(200).json({
-        status: "SUCCESS",
+        status: "SUCCESS", 
         message: "Food deleted successfully",
         data: food,
     });
