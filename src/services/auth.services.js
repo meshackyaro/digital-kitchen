@@ -29,7 +29,7 @@ export const registerUserService = async (data) => {
     }
 };
 
-export const login = async (data) => {
+export const loginService = async (data) => {
   
     const { identifier, password } = data;
 
