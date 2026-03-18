@@ -72,6 +72,10 @@ const orderSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true
+        },
+        details: {
+            type: Object,
+            required: false // Optional breakdown of fees/discounts
         }
     }
 );
