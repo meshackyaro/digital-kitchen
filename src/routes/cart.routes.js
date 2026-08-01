@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { validate } from "../middleware/validate.js";
-import { addToCartSchema } from "../validations/cart.validation.js";
+import { addToCartSchema } from "../validators/cart.validators.js";
 import { addToCartController, getCartController, emptyCartController, removeFromCartController } from "../controllers/cart.controller.js";
 import { authorize } from "../middleware/authorize.middleware.js";
 
